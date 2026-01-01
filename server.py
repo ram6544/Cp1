@@ -1,10 +1,15 @@
 import os
 import threading
 import runpy
+import asyncio
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
 def start_bot():
-    # bot.py ko aise run kare jaise: python bot.py
+    # Thread ke andar asyncio event loop create karo
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+
+    # bot.py ko aise run karo jaise: python bot.py
     runpy.run_module("bot", run_name="__main__")
 
 class Handler(BaseHTTPRequestHandler):
@@ -15,7 +20,7 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(b"Bot is running")
 
     def log_message(self, format, *args):
-        return  # logs disable
+        return  # silence logs
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
